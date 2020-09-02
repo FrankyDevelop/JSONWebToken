@@ -1,9 +1,11 @@
 const { Router } = require('express');
 const router= Router();
 
+require('jsonwebtoken');
+
 const User= require('../models/user');
 
-router.post('/registro', (req,res,next)=>{
+router.post('/registro', async (req,res,next)=>{
     //res.json('kha?');
     const {username,email,password}=req.body;
     const user= new User({
@@ -11,7 +13,8 @@ router.post('/registro', (req,res,next)=>{
         email:email,
         password:password
     });
-    user.password= user.encryptPassword(user.password);
+    user.password= await user.encryptPassword(user.password);
+    await user.save();
     console.log(user)
     res.json({message:'Received'});
 });
